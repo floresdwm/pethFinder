@@ -1,11 +1,13 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from PIL import Image
 import numpy as np
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from sklearn.metrics.pairwise import cosine_similarity
+import io
+import base64
 
 app = Flask(__name__)
 
@@ -36,7 +38,14 @@ print("Características extraídas com sucesso.")
 def find_most_similar_pet(query_features):
     similarities = cosine_similarity([query_features], pet_features)
     most_similar_indices = similarities.argsort()[0][-5:][::-1]
-    return [pet_files[i] for i in most_similar_indices]
+    most_similar_files = [pet_files[i] for i in most_similar_indices]
+    images_base64 = []
+    for file in most_similar_files:
+        with open(os.path.join('imagens', file), 'rb') as f:
+            image_bytes = f.read()
+            image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+            images_base64.append(image_base64)
+    return most_similar_files, images_base64
 
 
 # Rota de predição
@@ -52,8 +61,8 @@ def predict():
         img = np.array(img)
         img = preprocess_input(img)
         query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
-        most_similar_pets = find_most_similar_pet(query_features)
-        return jsonify({'most_similar_pets': most_similar_pets}), 200
+        most_similar_pets, images_base64 = find_most_similar_pet(query_features)
+        return jsonify({'most_similar_pets': most_similar_pets, 'images_base64': images_base64}), 200
 
 
 if __name__ == '__main__':
