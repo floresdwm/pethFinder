@@ -1,3 +1,7 @@
 #python 3.10.0
 bs4
 selenium
+pandas 
+requests 
+pillow
+openpyxl
