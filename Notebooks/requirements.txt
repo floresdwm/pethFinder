@@ -5,3 +5,5 @@ pandas
 requests 
 pillow
 openpyxl
+tensorflow
+opencv-python
