@@ -8,6 +8,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from sklearn.metrics.pairwise import cosine_similarity
 import csv
 from flasgger import Swagger
+from flask import render_template
 
 app = Flask(__name__)
 swagger = Swagger(app)
@@ -45,6 +46,24 @@ def find_most_similar_pet(query_features):
         formatted_most_similar_files.append(url)
 
     return formatted_most_similar_files
+
+
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return render_template('home.html', error='No file part')
+        file = request.files['file']
+        if file.filename == '':
+            return render_template('home.html', error='No selected file')
+        if file:
+            img = Image.open(file).resize((224, 224))
+            img = np.array(img)
+            img = preprocess_input(img)
+            query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
+            most_similar_pets = find_most_similar_pet(query_features)
+            return render_template('results.html', most_similar_pets=most_similar_pets)
+    return render_template('home.html')
 
 
 # Rota de predição
