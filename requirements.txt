@@ -8,3 +8,4 @@ openpyxl
 tensorflow
 opencv-python
 flasgger
+scikit-learn
