@@ -15,7 +15,8 @@ swagger = Swagger(app)
 
 # Carregar o modelo MobileNetV2 pré-treinado
 print("Carregando modelo MobileNetV2...")
-base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+model_path = "MobileNetV2_model.h5"
+base_model = MobileNetV2(weights=model_path, include_top=False, input_shape=(224, 224, 3))
 print("Modelo MobileNetV2 carregado com sucesso.")
 
 # Carregar características dos pets a partir do arquivo CSV
