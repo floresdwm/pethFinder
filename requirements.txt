@@ -1,11 +1,6 @@
-#python 3.10.0
-bs4
-selenium
-pandas 
-requests 
-pillow
-openpyxl
-tensorflow
-opencv-python
-flasgger
-scikit-learn
+Flask==3.0.2
+Pillow==10.3.0
+numpy==1.23.5
+tensorflow==2.16.1
+flasgger==0.9.7.1
+scikit-learn==1.2.2

@@ -10,17 +10,11 @@ import csv
 from flasgger import Swagger
 from flask import render_template
 
-# Verificar se o modelo MobileNetV2 já está presente no diretório do projeto
-model_path = "MobileNetV2_model.h5"
-if not os.path.exists(model_path):
-    # Baixar o modelo MobileNetV2
-    print("Baixando o modelo MobileNetV2...")
-    base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-    # Salvar o modelo baixado
-    base_model.save(model_path)
-    print("Modelo MobileNetV2 baixado e salvo com sucesso.")
-else:
-    # Carregar o modelo MobileNetV2 do arquivo
-    print("Carregando modelo MobileNetV2...")
-    base_model = MobileNetV2(weights=model_path, include_top=False, input_shape=(224, 224, 3))
-    print("Modelo MobileNetV2 carregado com sucesso.")
+import subprocess
+
+# Executa o comando 'pip freeze' para listar os pacotes instalados
+pip_freeze_output = subprocess.check_output(['pip', 'freeze']).decode()
+
+# Escreve a saída do 'pip freeze' em um arquivo 'requirements.txt'
+with open('requirements2.txt', 'w') as requirements_file:
+    requirements_file.write(pip_freeze_output)

@@ -10,7 +10,7 @@ import csv
 from flasgger import Swagger
 from flask import render_template
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 swagger = Swagger(app)
 
 # Carregar o modelo MobileNetV2 pré-treinado
