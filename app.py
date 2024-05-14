@@ -7,8 +7,10 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from sklearn.metrics.pairwise import cosine_similarity
 import csv
+from flasgger import Swagger
 
 app = Flask(__name__)
+swagger = Swagger(app)
 
 # Carregar o modelo MobileNetV2 pré-treinado
 print("Carregando modelo MobileNetV2...")
@@ -45,10 +47,30 @@ def find_most_similar_pet(query_features):
     return formatted_most_similar_files
 
 
-
 # Rota de predição
 @app.route('/predict', methods=['POST'])
 def predict():
+    """
+    Endpoint para prever os pets mais semelhantes com base em uma imagem enviada.
+    ---
+    parameters:
+      - name: file
+        in: formData
+        type: file
+        required: true
+        description: Imagem do pet (multipart/form-data)
+    responses:
+      200:
+        description: OK
+        schema:
+          id: Prediction
+          properties:
+            most_similar_pets:
+              type: array
+              items:
+                type: string
+                description: URL para o pet mais semelhante
+    """
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
     file = request.files['file']
