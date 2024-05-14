@@ -8,6 +8,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from sklearn.metrics.pairwise import cosine_similarity
 import io
 import base64
+import csv
 
 app = Flask(__name__)
 
@@ -16,22 +17,16 @@ print("Carregando modelo MobileNetV2...")
 base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
 print("Modelo MobileNetV2 carregado com sucesso.")
 
-# Carregar imagens de pets e extrair características
-print("Carregando imagens de pets e extraindo características...")
-pet_features = []
-pet_files = []
-for file in os.listdir('imagens'):
-    if file.endswith('.jpg') or file.endswith('.jpeg') or file.endswith('.png'):
-        file_path = os.path.join('imagens', file)
-        pet_files.append(file)
-        img = Image.open(file_path).resize((224, 224))
-        img = np.array(img)
-        img = preprocess_input(img)
-        features = base_model.predict(np.expand_dims(img, axis=0))
-        features = features.flatten()
-        pet_features.append(features)
-pet_features = np.array(pet_features)
-print("Características extraídas com sucesso.")
+# Carregar características dos pets a partir do arquivo CSV
+pet_features = np.loadtxt('pet_features.csv', delimiter=',')
+
+# Carregar informações dos arquivos dos pets a partir do arquivo CSV
+with open('pet_files.csv', 'r') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)  # Ignorar o cabeçalho
+    pet_files = [row[0] for row in reader]
+
+print("Características e informações dos arquivos dos pets carregadas com sucesso.")
 
 
 # Função para encontrar o pet mais semelhante
@@ -66,4 +61,4 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=False)
