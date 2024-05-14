@@ -9,6 +9,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import csv
 from flasgger import Swagger
 from flask import render_template
+import chardet
 
 app = Flask(__name__, static_url_path='/static')
 swagger = Swagger(app)
@@ -19,16 +20,26 @@ model_path = "MobileNetV2_model.h5"
 base_model = MobileNetV2(weights=model_path, include_top=False, input_shape=(224, 224, 3))
 print("Modelo MobileNetV2 carregado com sucesso.")
 
+# Função para determinar a codificação do arquivo CSV
+def detect_encoding(file_path):
+    with open(file_path, 'rb') as f:
+        result = chardet.detect(f.read())
+        encoding = result['encoding']
+    return encoding
+
 # Carregar características dos pets a partir do arquivo CSV
 pet_features = np.loadtxt('pet_features.csv', delimiter=',')
+print("pet_features carregadas com sucesso.")
 
 # Carregar informações dos arquivos dos pets a partir do arquivo CSV
-with open('pet_files.csv', 'r') as csvfile:
+pet_files_path = 'pet_files.csv'
+csv_encoding = detect_encoding(pet_files_path)
+with open(pet_files_path, 'r', encoding=csv_encoding) as csvfile:
     reader = csv.reader(csvfile)
     next(reader)  # Ignorar o cabeçalho
     pet_files = [row[0] for row in reader]
 
-print("Características e informações dos arquivos dos pets carregadas com sucesso.")
+print("pet_files carregadas com sucesso.")
 
 
 # Função para encontrar o pet mais semelhante

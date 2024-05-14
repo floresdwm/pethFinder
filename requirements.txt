@@ -4,3 +4,4 @@ numpy==1.23.5
 tensorflow==2.16.1
 flasgger==0.9.7.1
 scikit-learn==1.2.2
+chardet
