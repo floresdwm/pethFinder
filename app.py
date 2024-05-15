@@ -52,7 +52,8 @@ def find_most_similar_pet(query_features):
     formatted_most_similar_files = []
     for file in most_similar_files:
         # Extrair o número do ID do arquivo
-        id_number = file.split('_id_')[1].split('_')[0]
+        #id_number = file.split('_id_')[1].split('_')[0]
+        id_number = file.split('.')[0]
         # Formatar a URL com base no número do ID
         url = f"https://petsrs.com.br/pet/{id_number}"
         formatted_most_similar_files.append(url)
