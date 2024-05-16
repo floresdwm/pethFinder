@@ -59,6 +59,21 @@
             width: 100px; /* Adjust size as needed */
             height: auto;
         }
+        .explanation {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+        footer a {
+            margin: 0 10px;
+            color: #4caf50;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -66,17 +81,26 @@
         <div class="logo">
             <img src="/static/logo.jpg" alt="Logo">
         </div>
-        <h1>Procurar Pet</h1>
+        <h1>Procurar Pet RS via IA</h1>
         <form action="/home" method="POST" enctype="multipart/form-data">
-            <label for="file" class="upload-btn">Escolher imagem do pet</label>
+            <label for="file" class="upload-btn">1. Escolher imagem do pet</label>
             <input type="file" id="file" name="file" accept="image/*" onchange="displayFileName(this)" required>
             <span id="file-name"></span>
-            <button type="submit">Buscar</button>
+            <button type="submit">2. Buscar</button>
         </form>
+        <div class="explanation">
+            <h2>Como funciona?</h2>
+            <p>Selecione uma imagem do seu pet e clique em "Buscar" para ver a lista dos animais parecidos encontrados via IA na base de dados.</p>
+        </div>
         {% if error %}
         <p>{{ error }}</p>
         {% endif %}
     </div>
+    <footer>
+        <a href="https://petsrs.com.br/">Cadastre seu pet em: www.petsrs.com.br</a>
+        <a href="mailto:douglasfloresm@gmail.com">Contato: Douglas</a>
+        <a href="https://www.batbrasil.com/pt/index.html">Apoio: BAT Brasil</a>
+    </footer>
 
     <script>
         function displayFileName(input) {

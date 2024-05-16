@@ -70,7 +70,33 @@ def home():
         if file.filename == '':
             return render_template('home.html', error='No selected file')
         if file:
-            img = Image.open(file).resize((224, 224))
+            # Convertendo a imagem PNG para RGB
+            img = Image.open(file)
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            img = img.resize((224, 224))
+            img = np.array(img)
+            img = preprocess_input(img)
+            query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
+            most_similar_pets = find_most_similar_pet(query_features)
+            return render_template('results.html', most_similar_pets=most_similar_pets)
+    return render_template('home.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
+def idx():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return render_template('home.html', error='No file part')
+        file = request.files['file']
+        if file.filename == '':
+            return render_template('home.html', error='No selected file')
+        if file:
+            # Convertendo a imagem PNG para RGB
+            img = Image.open(file)
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            img = img.resize((224, 224))
             img = np.array(img)
             img = preprocess_input(img)
             query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()

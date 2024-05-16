@@ -20,24 +20,45 @@
             list-style-type: none;
             padding: 0;
             margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         li {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            margin-right: 20px;
+            width: 200px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        li:hover {
+            transform: translateY(-5px);
         }
         a {
             text-decoration: none;
             color: #4caf50;
-        }
-        a:hover {
-            text-decoration: underline;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding: 0 10px; /* Adiciona um espaçamento para o texto */
         }
     </style>
 </head>
 <body>
-    <h1>Pets parecidos</h1>
+    <h1>Pets parecidos, clique para abrir os detalhes:</h1>
     <ul>
         {% for pet in most_similar_pets %}
-        <li><a href="{{ pet }}" target="_blank">{{ pet }}</a></li>
+        <li>
+            <a href="{{ pet }}" target="_blank">{{ pet.split('/')[-1] }}</a>
+        </li>
         {% endfor %}
     </ul>
 </body>
