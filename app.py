@@ -31,12 +31,13 @@ def detect_objects(model, img):
         x1, y1, x2, y2, conf, cls = result
         if int(cls) == 16 and conf > 0.4:  # 16 é a classe de animais
             cropped_img = img[int(y1):int(y2), int(x1):int(x2)]
-            # Salvar a imagem recortada
-            cv2.imwrite('cropped_temp.jpg', cropped_img)
+            # Salvar a imagem recortada p test
+            #cv2.imwrite('cropped_temp.jpg', cropped_img)
             return cropped_img
         if int(cls) == 15 and conf > 0.4:  # 15 é a classe de animais
             cropped_img = img[int(y1):int(y2), int(x1):int(x2)]
-            cv2.imwrite('cropped_temp2.jpg', cropped_img)
+            # Salvar a imagem recortada p test
+            #cv2.imwrite('cropped_temp2.jpg', cropped_img)
             return cropped_img
 
     return None
@@ -103,16 +104,38 @@ def home():
         if file.filename == '':
             return render_template('home.html', error='No selected file')
         if file:
-            # Convertendo a imagem PNG para RGB
-            img = Image.open(file)
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
-            img = img.resize((224, 224))
-            img = np.array(img)
-            img = preprocess_input(img)
-            query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
-            most_similar_pets = find_most_similar_pet(query_features)
-            return render_template('results.html', most_similar_pets=most_similar_pets)
+            # Salvar a imagem temporariamente
+            image_path = 'temp.jpg'
+            file.save(image_path)
+
+            # Carregar imagem
+            image = cv2.imread(image_path)
+
+            # Detectar e recortar objetos na imagem yolo
+            cropped_image = detect_objects(net, image) 
+
+            if cropped_image is not None:
+                # Processar yolo
+                img = Image.fromarray(cropped_image).resize((224, 224))
+                img = np.array(img)
+                img = preprocess_input(img)
+                query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
+                most_similar_pets = find_most_similar_pet(query_features)
+                
+                # Remover imagem temporária
+                os.remove(image_path)
+
+                return render_template('results.html', most_similar_pets=most_similar_pets)
+            else:
+                # Remover imagem temporária
+                os.remove(image_path)
+
+                img = Image.open(file).resize((224, 224))
+                img = np.array(img)
+                img = preprocess_input(img)
+                query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
+                most_similar_pets = find_most_similar_pet(query_features)            
+                return render_template('results.html', most_similar_pets=most_similar_pets)
     return render_template('home.html')
 
 
@@ -125,16 +148,38 @@ def idx():
         if file.filename == '':
             return render_template('home.html', error='No selected file')
         if file:
-            # Convertendo a imagem PNG para RGB
-            img = Image.open(file)
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
-            img = img.resize((224, 224))
-            img = np.array(img)
-            img = preprocess_input(img)
-            query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
-            most_similar_pets = find_most_similar_pet(query_features)
-            return render_template('results.html', most_similar_pets=most_similar_pets)
+            # Salvar a imagem temporariamente
+            image_path = 'temp.jpg'
+            file.save(image_path)
+
+            # Carregar imagem
+            image = cv2.imread(image_path)
+
+            # Detectar e recortar objetos na imagem yolo
+            cropped_image = detect_objects(net, image) 
+
+            if cropped_image is not None:
+                # Processar yolo
+                img = Image.fromarray(cropped_image).resize((224, 224))
+                img = np.array(img)
+                img = preprocess_input(img)
+                query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
+                most_similar_pets = find_most_similar_pet(query_features)
+                
+                # Remover imagem temporária
+                os.remove(image_path)
+
+                return render_template('results.html', most_similar_pets=most_similar_pets)
+            else:
+                # Remover imagem temporária
+                os.remove(image_path)
+
+                img = Image.open(file).resize((224, 224))
+                img = np.array(img)
+                img = preprocess_input(img)
+                query_features = base_model.predict(np.expand_dims(img, axis=0)).flatten()
+                most_similar_pets = find_most_similar_pet(query_features)            
+                return render_template('results.html', most_similar_pets=most_similar_pets)
     return render_template('home.html')
 
 
